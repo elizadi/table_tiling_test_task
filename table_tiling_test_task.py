@@ -13,7 +13,7 @@ class P_Polyomino(Polyomino):
 		super().__init__(h, w)
 		self.arr = np.array([1 if x < w or x % w == 0 or x % w == w - 1 else 0 for x in range(h * w)]).reshape(h, w)
 		self.s = h*w-(h-2)*(w-1)
-		if h < 2 or w < 3: 
+		if h < 2 or w < 3: 				#print a warning that the given shape cannot be a p_polyomino 
 			print(h, w, ' - it`s not p_polyomino')
 
 class Table:
