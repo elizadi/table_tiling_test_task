@@ -13,6 +13,8 @@ class P_Polyomino(Polyomino):
 		super().__init__(h, w)
 		self.arr = np.array([1 if x < w or x % w == 0 or x % w == w - 1 else 0 for x in range(h * w)]).reshape(h, w)
 		self.s = h*w-(h-2)*(w-1)
+		if h < 2 or w < 3: 
+			print(h, w, ' - it`s not p_polyomino')
 
 class Table:
 	def __init__(self, H, W):
@@ -44,8 +46,13 @@ class Table:
 			polyomino.rotate()
 		yield False			
 		
-	def filling(self, polyominos):                                      #check of the filling status
+	def filling(self, p_polyominos, polyominos):                                      #check of the filling status
 		S = 0
+		for p_polyomino in p_polyominos:
+			if np.max(p_polyomino.arr.shape) > max(self.T1, self.T2) or np.min(p_polyomino.arr.shape) > min(self.T1, self.T2):
+				return False
+			S += p_polyomino.s
+
 		for polyomino in polyominos:
 			if np.max(polyomino.arr.shape) > max(self.M, self.N) or np.min(polyomino.arr.shape) > min(self.M, self.N):
 				return False
@@ -53,20 +60,32 @@ class Table:
 		if S > self.M * self.N:
 			return False
 
+		status = [self.place_generation(p_polyomino) for p_polyomino in p_polyominos]
 		status = [self.place_generation(polyomino) for polyomino in polyominos]
 		d = 0
-		while 0 <= d < len(polyominos):
+		a = 0
+		while 0 <= d + a < len(polyominos) + len(polyominos):
 			if next(status[d]):
 				d += 1
 			else:
 				if d == 0:
 					break
-				self.pop_polyomino(polyominos[d-1], self.filled_polyomino_coord[-1])
+				self.pop_polyomino(p_polyominos[d-1], self.filled_polyomino_coord[-1])
 				self.filled_polyomino_coord.pop()
-				status[d] = self.place_generation(polyominos[d])
+				status[d] = self.place_generation(p_polyominos[d])
 				d -= 1
+				
+			if next(status[a]):
+				a += 1
+			else:
+				if a == 0:
+					break
+				self.pop_polyomino(polyominos[a-1], self.filled_polyomino_coord[-1])
+				self.filled_polyomino_coord.pop()
+				status[a] = self.place_generation(polyominos[a])
+				a -= 1
 
-		if d == len(polyominos):
+		if d + a == len(polyominos) + len(p_polyominos):
 			return True
 		else:
 			return False
@@ -93,4 +112,4 @@ if __name__ == '__main__':
 				p_polyominos.append(p)
 	
 	t = Table(int(T1), int(T2))
-	print(t.filling(polyominos))
+	print(t.filling(p_polyominos, polyominos))
