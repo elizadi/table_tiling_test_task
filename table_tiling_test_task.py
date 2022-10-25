@@ -49,7 +49,7 @@ class Table:
 	def filling(self, p_polyominos, polyominos):                                      #check of the filling status
 		S = 0
 		for p_polyomino in p_polyominos:
-			if np.max(p_polyomino.arr.shape) > max(self.T1, self.T2) or np.min(p_polyomino.arr.shape) > min(self.T1, self.T2):
+			if np.max(p_polyomino.arr.shape) > max(self.M, self.N) or np.min(p_polyomino.arr.shape) > min(self.M, self.N):
 				return False
 			S += p_polyomino.s
 
