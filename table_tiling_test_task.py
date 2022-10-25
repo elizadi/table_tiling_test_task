@@ -11,7 +11,7 @@ class Polyomino:
 class P_Polyomino(Polyomino):
 	def __init__(self, h, w):
 		super().__init__(h, w)
-		self.arr = np.array([1 if x < w or x % w == 0 or x >= w * (h - 1) else 0 for x in range(h * w)]).reshape(h, w)
+		self.arr = np.array([1 if x < w or x % w == 0 or x % w == w - 1 else 0 for x in range(h * w)]).reshape(h, w)
 		self.s = h*w-(h-2)*(w-1)
 
 class Table:
